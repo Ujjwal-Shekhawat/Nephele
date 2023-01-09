@@ -1,0 +1,48 @@
+#cloud-config
+
+system_info:
+  default_user:
+    name: ${default_user}
+    primary_group: ${default_user_group}
+    gecos: ${default_user_gecos}
+    groups: adm, sudo, docker
+    shell: /bin/bash
+    ssh_authorized_keys: ${ssh_public_key}
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: true
+
+write_files:
+  - content: |
+      ${base64encode("${setup_script}")}
+    encoding: b64
+    path: ${scripts_path}/setup_script.sh
+    permissions: 0700
+  - content: |
+      ${base64encode("${minecraft_server_setup_script}")}
+    encoding: b64
+    path: ${scripts_path}/minecraft_server_setup_script.sh
+    permissions: 0700
+  - content: |
+      ${base64encode("${service_setup}")}
+    encoding: b64
+    path: ${compose_scripts_path}/service_setup.sh
+    permissions: 0700
+  - content: |
+      ${base64encode("${nginx_compose}")}
+    encoding: b64
+    path: ${compose_scripts_path}/nginx_proxy_manager.yml
+    permissions: 0600
+
+package_update: true
+package_upgrade: true
+package_reboot_if_required: true
+
+runcmd:
+  # initial setup and compose up
+  - /data/setup_script.sh
+  - chown ${default_user}:${default_user_group} ${compose_scripts_path}/*
+  - su ${default_user} ${compose_scripts_path}/service_setup.sh ${compose_scripts_path}/nginx_proxy_manager.yml
+  # Minecraft server setup
+  - cd /home/${default_user}
+  - chown ${default_user}:${default_user_group} ${scripts_path}/minecraft_server_setup_script.sh
+  - su ${default_user} ${scripts_path}/minecraft_server_setup_script.sh

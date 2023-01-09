@@ -1,0 +1,8 @@
+.terraform*
+*.tfvars
+*.tfstate
+*.tfstate.backup
+
+# local scripts
+cleanup.sh
+ssh-instance.sh
