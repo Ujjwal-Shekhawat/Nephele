@@ -13,16 +13,6 @@ variable "compartment_ocid" {
   description = "Oracle Compartment OCID"
 }
 
-variable "vnic_ocid" {
-  type        = string
-  description = "Oracle vnic OCID"
-}
-
-variable "subnet_ocid" {
-  type        = string
-  description = "Oracle subnet OCID"
-}
-
 variable "fingerprint" {
   type        = string
   description = "Oracle API fingerprint"
@@ -34,7 +24,7 @@ variable "cloudfare_api_token" {
 }
 
 variable "wg_easy_password" {
-  type = string
+  type        = string
   description = "Wireguard password"
 }
 variable "oci_private_key_path" {
@@ -90,4 +80,48 @@ variable "scripts_path" {
 variable "compose_scripts_path" {
   type        = string
   description = "Path on instance where all docker compose files will be written"
+}
+
+variable "oci_cidr_blocks" {
+  type        = string
+  description = "CIDR blocks"
+}
+variable "oci_vcn_dns_label" {
+  type        = string
+  description = "oci vcn dns label"
+}
+
+variable "oci_vcn_display_name" {
+  type        = string
+  description = "oci vcn display name"
+}
+
+variable "oci_internet_gateway_display_name" {
+  type        = string
+  description = "oci internet gateway display name"
+}
+
+variable "oci_route_table_display_name" {
+  type        = string
+  description = "oci route table display name"
+}
+
+variable "oci_route_tables_description" {
+  type        = string
+  description = "oci route table description"
+}
+
+variable "oci_subnet_display_name" {
+  type        = string
+  description = "oci subnet display name"
+}
+
+variable "oci_security_list_display_name" {
+  type        = string
+  description = "oci security list display name"
+}
+
+variable "oci_subnet_cidr_block" {
+  type        = string
+  description = "oci subnet CIDR block"
 }
