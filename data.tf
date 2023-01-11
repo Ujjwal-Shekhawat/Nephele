@@ -7,6 +7,7 @@ data "template_file" "user_data" {
     service_setup                 = file("./scripts/compose/service_setup.sh")
     nginx_compose                 = file("./scripts/compose/nginx_proxy_manager.yml")
     ssh_public_key                = file("~/.ssh/id_rsa.pub")
+    wg_easy_password              = var.wg_easy_password
     default_user                  = var.default_user
     default_user_group            = var.default_user
     default_user_gecos            = var.default_user_gecos

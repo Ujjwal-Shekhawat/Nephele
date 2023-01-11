@@ -33,6 +33,10 @@ variable "cloudfare_api_token" {
   description = "CLoudfare API token"
 }
 
+variable "wg_easy_password" {
+  type = string
+  description = "Wireguard password"
+}
 variable "oci_private_key_path" {
   type        = string
   description = "Path to the oci private key"
