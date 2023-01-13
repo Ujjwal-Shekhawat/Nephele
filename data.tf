@@ -5,7 +5,7 @@ data "template_file" "user_data" {
     setup_script                  = file("./scripts/setup_script.sh")
     minecraft_server_setup_script = file("./scripts/minecraft_server_setup_script.sh")
     service_setup                 = file("./scripts/compose/service_setup.sh")
-    nginx_compose                 = file("./scripts/compose/nginx_proxy_manager.yml")
+    nginx_compose                 = file("./scripts/compose/docker-compose.yml")
     ssh_public_key                = file("~/.ssh/id_rsa.pub")
     cloudflare_api_token          = var.cloudflare_api_token
     domain_name                   = var.cloudflare_domain_name
