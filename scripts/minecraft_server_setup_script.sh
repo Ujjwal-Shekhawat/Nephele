@@ -4,7 +4,7 @@ cd minecraft_server
 wget https://piston-data.mojang.com/v1/objects/c9df48efed58511cdd0213c56b9013a7b5c9ac1f/server.jar
 echo "eula=true" > eula.txt
 
-echo "FROM openjdk:17
+echo "FROM openjdk:19
 
 WORKDIR /server
 
@@ -18,7 +18,7 @@ EXPOSE 25575/tcp
 
 CMD [\"java\", \"-jar\", \"-Xmn9G\", \"-Xmx18G\", \"server.jar\", \"nogui\"]" > Dockerfile
 
-echo "version: '3.9'
+echo "version: \"3.9\"
 services:
   minecraft:
     image: minecraft
