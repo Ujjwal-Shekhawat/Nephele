@@ -50,18 +50,18 @@ resource "cloudflare_record" "minecraft" {
   proxied = true
 }
 
-resource "cloudflare_record" "_minecraft_tls" {
+resource "cloudflare_record" "_minecraft_tcp" {
   zone_id = data.cloudflare_zones.domain.zones[0].id
-  name    = "_minecraft._tls"
+  name    = "_minecraft._tcp"
   type    = "SRV"
 
   data {
     service  = "_minecraft"
-    proto    = "_tls"
+    proto    = "_tcp"
     name     = "minecraft"
     priority = 0
     weight   = 0
     port     = 25565
-    target   = "ujjwalshekhawat.dev"
+    target   = "minecraft.ujjwalshekhawat.dev"
   }
 }

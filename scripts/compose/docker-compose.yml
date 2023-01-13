@@ -34,6 +34,8 @@ services:
       - traefik.http.routers.dashboard-secure.tls=true
       - traefik.http.routers.dashboard-secure.service=api@internal
       - traefik.docker.network=proxy
+    networks:
+      - proxy
 
   heimdall:
     image: lscr.io/linuxserver/heimdall:latest
@@ -51,6 +53,8 @@ services:
       - traefik.http.routers.heimdall.rule=Host(`heimdall.${DOMAIN}`)
       - traefik.http.services.heimdall.loadbalancer.server.port=80
       - traefik.http.routers.heimdall.tls.certresolver=letsencrypt
+    networks:
+      - proxy
 
   wg-easy:
     environment:
@@ -78,6 +82,8 @@ services:
       - traefik.http.routers.wg-easy.rule=Host(`wg.${DOMAIN}`)
       - traefik.http.services.wg-easy.loadbalancer.server.port=51821
       - traefik.http.routers.wg-easy.tls.certresolver=letsencrypt
+    networks:
+      - proxy
 
   portainer:
     image: portainer/portainer-ce:latest
@@ -95,6 +101,8 @@ services:
       - traefik.http.routers.portainer.rule=Host(`portainer.${DOMAIN}`)
       - traefik.http.services.portainer.loadbalancer.server.port=9000
       - traefik.http.routers.portainer.tls.certresolver=letsencrypt
+    networks:
+      - proxy
 
 networks:
   proxy:
