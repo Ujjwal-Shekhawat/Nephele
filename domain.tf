@@ -40,3 +40,28 @@ resource "cloudflare_record" "traefik" {
   ttl     = "1"
   proxied = true
 }
+
+resource "cloudflare_record" "minecraft" {
+  zone_id = data.cloudflare_zones.domain.zones[0].id
+  name    = "minecraft"
+  value   = oci_core_instance.compute_instance.public_ip
+  type    = "A"
+  ttl     = "1"
+  proxied = true
+}
+
+resource "cloudflare_record" "_minecraft_tls" {
+  zone_id = data.cloudflare_zones.domain.zones[0].id
+  name    = "_minecraft._tls"
+  type    = "SRV"
+
+  data {
+    service  = "_minecraft"
+    proto    = "_tls"
+    name     = "minecraft"
+    priority = 0
+    weight   = 0
+    port     = 25565
+    target   = "ujjwalshekhawat.dev"
+  }
+}
