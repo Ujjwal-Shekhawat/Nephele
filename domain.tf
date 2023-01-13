@@ -1,13 +1,13 @@
 data "cloudflare_zones" "domain" {
   filter {
-    name        = var.cloudfare_domain_name
+    name        = var.cloudflare_domain_name
     lookup_type = "exact"
   }
 }
 
-resource "cloudflare_record" "proxy_manager" {
+resource "cloudflare_record" "wireguard" {
   zone_id = data.cloudflare_zones.domain.zones[0].id
-  name    = "proxy"
+  name    = "wg"
   value   = oci_core_instance.compute_instance.public_ip
   type    = "A"
   ttl     = "1"
@@ -26,6 +26,15 @@ resource "cloudflare_record" "portainer" {
 resource "cloudflare_record" "heimdall" {
   zone_id = data.cloudflare_zones.domain.zones[0].id
   name    = "heimdall"
+  value   = oci_core_instance.compute_instance.public_ip
+  type    = "A"
+  ttl     = "1"
+  proxied = true
+}
+
+resource "cloudflare_record" "traefik" {
+  zone_id = data.cloudflare_zones.domain.zones[0].id
+  name    = "traefik"
   value   = oci_core_instance.compute_instance.public_ip
   type    = "A"
   ttl     = "1"

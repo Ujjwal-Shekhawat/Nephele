@@ -112,17 +112,6 @@ resource "oci_core_security_list" "nephele_security_list" {
       min = 25575
     }
   }
-
-  ingress_security_rules {
-    protocol    = 6
-    source      = "0.0.0.0/0"
-    description = "TEMP"
-    stateless   = false
-    tcp_options {
-      max = 8080
-      min = 8080
-    }
-  }
 }
 
 resource "oci_core_subnet" "nephele_public_subnet" {

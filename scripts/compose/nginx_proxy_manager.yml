@@ -1,16 +1,39 @@
 version: "3"
 services:
-  nginx-proxy-manager:
-    image: "jc21/nginx-proxy-manager:latest"
-    container_name: nginx-proxy-manager
-    restart: unless-stopped
+  traefik:
+    image: traefik:v2.9
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.websecure.http.tls.domains[0].main=${DOMAIN}
+      - --entrypoints.websecure.http.tls.domains[0].sans=*.${DOMAIN}
+      - --entrypoints.websecure.http.tls.certresolver=letsencrypt
+
+      - --certificatesresolvers.letsencrypt.acme.dnschallenge=true
+      - --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare
+      - --certificatesresolvers.letsencrypt.acme.email=${EMAIL}
+
+      - --serversTransport.insecureSkipVerify=true
+    environment:
+      - CLOUDFLARE_DNS_API_TOKEN=${CLOUDFLARE_API_TOKEN}
     ports:
       - "80:80"
-      - "81:81"
       - "443:443"
     volumes:
-      - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.dashboard-secure.entrypoints=websecure
+      - traefik.http.routers.dashboard-secure.tls.certresolver=letsencrypt
+      - traefik.http.routers.dashboard-secure.rule=Host(`traefik.${DOMAIN}`)
+      - traefik.http.routers.dashboard-secure.tls=true
+      - traefik.http.routers.dashboard-secure.service=api@internal
+      - traefik.docker.network=proxy
 
   heimdall:
     image: lscr.io/linuxserver/heimdall:latest
@@ -22,24 +45,19 @@ services:
     volumes:
       - ./config:/config
     restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.heimdall.entrypoints=websecure
+      - traefik.http.routers.heimdall.rule=Host(`heimdall.${DOMAIN}`)
+      - traefik.http.services.heimdall.loadbalancer.server.port=80
+      - traefik.http.routers.heimdall.tls.certresolver=letsencrypt
 
   wg-easy:
     environment:
-      # ⚠️ Required:
-      # Change this to your host's public address
       - WG_HOST=$INSTANCE_PUBLIC_IP
 
-      # Optional:
       - PASSWORD=$WG_EASY_PASSWORD
       - WG_PORT=51820
-      # - WG_DEFAULT_ADDRESS=140.238.248.73
-      # - WG_DEFAULT_DNS=1.1.1.1
-      # - WG_MTU=1420
-      # - WG_ALLOWED_IPS=192.168.15.0/24, 10.0.1.0/24
-      # - WG_PRE_UP=echo "Pre Up" > /etc/wireguard/pre-up.txt
-      # - WG_POST_UP=echo "Post Up" > /etc/wireguard/post-up.txt
-      # - WG_PRE_DOWN=echo "Pre Down" > /etc/wireguard/pre-down.txt
-      # - WG_POST_DOWN=echo "Post Down" > /etc/wireguard/post-down.txt
 
     image: weejewel/wg-easy
     container_name: wg-easy
@@ -47,7 +65,6 @@ services:
       - .:/etc/wireguard
     ports:
       - "51820:51820/udp"
-      - "51821:51821/tcp"
     restart: unless-stopped
     cap_add:
       - NET_ADMIN
@@ -55,8 +72,30 @@ services:
     sysctls:
       - net.ipv4.ip_forward=1
       - net.ipv4.conf.all.src_valid_mark=1
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.wg-easy.entrypoints=websecure
+      - traefik.http.routers.wg-easy.rule=Host(`wg.${DOMAIN}`)
+      - traefik.http.services.wg-easy.loadbalancer.server.port=51821
+      - traefik.http.routers.wg-easy.tls.certresolver=letsencrypt
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./portainer-data:/data
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.portainer.entrypoints=websecure
+      - traefik.http.routers.portainer.rule=Host(`portainer.${DOMAIN}`)
+      - traefik.http.services.portainer.loadbalancer.server.port=9443
+      - traefik.http.routers.portainer.tls.certresolver=letsencrypt
 
 networks:
-  default:
-    external: false
-    name: nginxproxymanager_default
+  proxy:
+    name: proxy

@@ -18,9 +18,9 @@ variable "fingerprint" {
   description = "Oracle API fingerprint"
 }
 
-variable "cloudfare_api_token" {
+variable "cloudflare_api_token" {
   type        = string
-  description = "CLoudfare API token"
+  description = "Cloudflare API token"
 }
 
 variable "wg_easy_password" {
@@ -40,11 +40,6 @@ variable "region" {
 variable "instance_shape" {
   type        = string
   description = "Oracle instance shape"
-}
-
-variable "image_ocid" {
-  type        = string
-  description = "Oracle image OCID"
 }
 
 variable "selected_AD" {
@@ -67,9 +62,9 @@ variable "default_user_gecos" {
   description = "Default user gecos"
 }
 
-variable "cloudfare_domain_name" {
+variable "cloudflare_domain_name" {
   type        = string
-  description = "Cloudfare domain name"
+  description = "Cloudflare domain name"
 }
 
 variable "scripts_path" {
@@ -124,4 +119,9 @@ variable "oci_security_list_display_name" {
 variable "oci_subnet_cidr_block" {
   type        = string
   description = "oci subnet CIDR block"
+}
+
+variable "cloudflare_email" {
+  type        = string
+  description = "Cloudflare email address"
 }

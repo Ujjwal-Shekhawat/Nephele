@@ -11,7 +11,7 @@ resource "oci_core_instance" "compute_instance" {
 
   source_details {
     boot_volume_size_in_gbs = 200
-    source_id               = var.image_ocid
+    source_id               = data.oci_core_images.ubuntu.images[0].id
     source_type             = "image"
   }
 
