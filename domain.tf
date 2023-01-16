@@ -62,6 +62,6 @@ resource "cloudflare_record" "_minecraft_tcp" {
     priority = 0
     weight   = 0
     port     = 25565
-    target   = "minecraft.ujjwalshekhawat.dev"
+    target   = "minecraft.${var.cloudflare_domain_name}"
   }
 }
