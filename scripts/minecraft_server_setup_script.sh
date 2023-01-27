@@ -1,7 +1,7 @@
 #!/bin/bash
 mkdir minecraft_server
 cd minecraft_server
-wget https://piston-data.mojang.com/v1/objects/c9df48efed58511cdd0213c56b9013a7b5c9ac1f/server.jar
+curl -o server.jar https://meta.fabricmc.net/v2/versions/loader/1.19.3/0.14.13/0.11.1/server/jar
 echo "eula=true" > eula.txt
 
 echo "FROM openjdk:19
@@ -26,6 +26,7 @@ services:
     stdin_open: true
     restart: unless-stopped
     tty: true
+    user: ${DOCKER_USER}
     ports:
       - 25565:25565
       - 25575:25575
@@ -44,4 +45,4 @@ networks:
     name: proxy" > docker-compose.yml
 
 docker build -t minecraft .
-docker compose up -d
+DOCKER_USER="$(id -u):$(id -g)" docker compose up -d
