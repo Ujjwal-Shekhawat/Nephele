@@ -4,8 +4,9 @@ data "template_file" "user_data" {
   vars = {
     setup_script                  = file("./scripts/setup_script.sh")
     minecraft_server_setup_script = file("./scripts/minecraft_server_setup_script.sh")
-    service_setup                 = file("./scripts/compose/service_setup.sh")
-    nginx_compose                 = file("./scripts/compose/docker-compose.yml")
+    service_setup                 = file("./scripts/service_setup.sh")
+    docker_compose                = file("./scripts/docker-compose.yml")
+    env_file                      = file("./scripts/.env")
     ssh_public_key                = file(var.ssh_public_key)
     cloudflare_api_token          = var.cloudflare_api_token
     domain_name                   = var.cloudflare_domain_name
@@ -15,7 +16,6 @@ data "template_file" "user_data" {
     default_user_group            = var.default_user
     default_user_gecos            = var.default_user_gecos
     scripts_path                  = var.scripts_path
-    compose_scripts_path          = var.compose_scripts_path
   }
 }
 
