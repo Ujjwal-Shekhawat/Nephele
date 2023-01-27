@@ -2,7 +2,7 @@ resource "oci_core_instance" "compute_instance" {
   availability_domain = var.selected_AD
   compartment_id      = var.compartment_ocid
   shape               = var.instance_shape
-  display_name        = "nepehile"
+  display_name        = "nephele"
 
   create_vnic_details {
     assign_public_ip = true
