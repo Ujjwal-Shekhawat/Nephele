@@ -72,11 +72,6 @@ variable "scripts_path" {
   description = "Path on instance where all scripts will be written"
 }
 
-variable "compose_scripts_path" {
-  type        = string
-  description = "Path on instance where all docker compose files will be written"
-}
-
 variable "oci_cidr_blocks" {
   type        = string
   description = "CIDR blocks"
