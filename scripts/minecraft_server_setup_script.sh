@@ -18,7 +18,7 @@ EXPOSE 25575/tcp
 
 CMD [\"java\", \"-jar\", \"-Xmn9G\", \"-Xmx18G\", \"server.jar\", \"nogui\"]" > Dockerfile
 
-echo "version: \"3.9\"
+DOCKER_USER="$(id -u):$(id -g)" echo "version: \"3.9\"
 services:
   minecraft:
     image: minecraft
@@ -45,4 +45,4 @@ networks:
     name: proxy" > docker-compose.yml
 
 docker build -t minecraft .
-DOCKER_USER="$(id -u):$(id -g)" docker compose up -d
+docker compose up -d
