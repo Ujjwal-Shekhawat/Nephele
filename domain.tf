@@ -41,6 +41,16 @@ resource "cloudflare_record" "traefik" {
   proxied = true
 }
 
+resource "cloudflare_record" "filemanager" {
+  zone_id = data.cloudflare_zones.domain.zones[0].id
+  name    = "filemanager"
+  value   = oci_core_instance.compute_instance.public_ip
+  type    = "A"
+  ttl     = "1"
+  proxied = true
+}
+
+
 resource "cloudflare_record" "minecraft" {
   zone_id = data.cloudflare_zones.domain.zones[0].id
   name    = "minecraft"
