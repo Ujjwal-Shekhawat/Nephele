@@ -25,12 +25,17 @@ write_files:
   - content: |
       ${base64encode("${service_setup}")}
     encoding: b64
-    path: ${compose_scripts_path}/service_setup.sh
+    path: ${scripts_path}/service_setup.sh
     permissions: 0700
   - content: |
-      ${base64encode("${nginx_compose}")}
+      ${base64encode("${env_file}")}
     encoding: b64
-    path: ${compose_scripts_path}/docker-compose.yml
+    path: ${scripts_path}/.env
+    permissions: 0600
+  - content: |
+      ${base64encode("${docker_compose}")}
+    encoding: b64
+    path: ${scripts_path}/docker-compose.yml
     permissions: 0600
 
 package_update: true
@@ -40,8 +45,9 @@ package_reboot_if_required: true
 runcmd:
   # initial setup and compose up
   - /data/setup_script.sh
-  - chown ${default_user}:${default_user_group} ${compose_scripts_path}/*
-  - su ${default_user} ${compose_scripts_path}/service_setup.sh ${compose_scripts_path}/docker-compose.yml ${wg_easy_password} ${cloudflare_api_token} ${domain_name} ${email}
+  - chown ${default_user}:${default_user_group} ${scripts_path}/*
+  - chown ${default_user}:${default_user_group} ${scripts_path}/.env
+  - su ${default_user} ${scripts_path}/service_setup.sh
   # Minecraft server setup
   - cd /home/${default_user}
   - chown ${default_user}:${default_user_group} ${scripts_path}/minecraft_server_setup_script.sh
