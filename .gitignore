@@ -2,6 +2,7 @@
 terraform.tfvars
 *.tfstate
 *.tfstate.backup
+scripts/.env
 
 # local scripts
 cleanup.sh
